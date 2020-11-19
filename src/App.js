@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import ShowUser from './components/ShowUser';
 import './App.css';
 
+const URL = process.env.REACT_APP_GITHUB_URL || 'https://api.github.com/users/rajukumarrails'
+
 function App() {
+  const [user, setUser] = useState({});
+  const [active, setActive] = useState(false);
+
+  const handleToggle = () => {
+    if (!active) {
+      fetch(URL)
+        .then(response => response.json())
+        .then(data => setUser(data));
+    }
+    setActive(!active)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button variant="secondary" onClick={handleToggle}>Toggle User</Button>
+      {active && <ShowUser user={user} />}
     </div>
   );
 }
